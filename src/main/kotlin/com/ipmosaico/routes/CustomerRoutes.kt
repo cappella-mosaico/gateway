@@ -13,10 +13,12 @@ import khttp.put as httpPut
 
 fun Route.customerRouting() {
 
+    val ROOT_PASTORAIS = "http://pastorais:8080"
+
     route("/pastorais") {
         get {
             val amount = call.request.queryParameters["amount"]
-            val response = httpGet("http://localhost:7000/pastorais/public/latest?amount=$amount")
+            val response = httpGet("$ROOT_PASTORAIS/pastorais/public/latest?amount=$amount")
             call.respondBytes { response.content }
         }
         authenticate ("auth-jwt") {
@@ -29,7 +31,7 @@ fun Route.customerRouting() {
                 println(headers)
                 val response = httpPost(
                     headers = headers,
-                    url = "http://localhost:7000/pastorais",
+                    url = "$ROOT_PASTORAIS/pastorais",
                     data = pastoral.toString()
                 )
                 call.respondBytes { response.content }
@@ -47,7 +49,7 @@ fun Route.customerRouting() {
                 println(headers)
                 val response = httpDelete(
                     headers = headers,
-                    url = "http://localhost:7000/pastorais/$id",
+                    url = "$ROOT_PASTORAIS/pastorais/$id",
                 )
                 call.respondBytes { response.content }
             }
@@ -64,7 +66,7 @@ fun Route.customerRouting() {
                 println(headers)
                 val response = httpPut(
                     headers = headers,
-                    url = "http://localhost:7000/pastorais/notify/$id",
+                    url = "$ROOT_PASTORAIS/pastorais/notify/$id",
                 )
                 call.respondBytes { response.content }
             }
