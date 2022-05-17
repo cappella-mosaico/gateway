@@ -1,0 +1,58 @@
+
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import kotlinx.serialization.json.JsonObject
+import khttp.delete as httpDelete
+import khttp.get as httpGet
+import khttp.post as httpPost
+
+fun Route.financeiroRouting() {
+
+    val ROOT = "http://financeiro:8080"
+
+    route("/financeiro") {
+        get {
+            val amount = call.request.queryParameters["amount"]
+            val response = httpGet("$ROOT/financeiro/public/latest?amount=$amount")
+            call.respondBytes { response.content }
+        }
+        authenticate ("auth-jwt") {
+            post {
+                val pastoral = call.receive<JsonObject>()
+                println(pastoral)
+
+                val headers : Map<String, String> = call.request.headers.entries()
+                    .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
+                println(headers)
+                val response = httpPost(
+                    headers = headers,
+                    url = "$ROOT/financeiro",
+                    data = pastoral.toString()
+                )
+                call.respondBytes { response.content }
+            }
+        }
+        authenticate ("auth-jwt") {
+            delete("{id?}") {
+                val id = call.parameters["id"] ?: return@delete call.respondText(
+                    "Missing id",
+                    status = HttpStatusCode.BadRequest
+                )
+
+                val headers : Map<String, String> = call.request.headers.entries()
+                    .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
+                println(headers)
+                val response = httpDelete(
+                    headers = headers,
+                    url = "$ROOT/financeiro/$id",
+                )
+                call.respondBytes { response.content }
+            }
+        }
+    }
+
+}
