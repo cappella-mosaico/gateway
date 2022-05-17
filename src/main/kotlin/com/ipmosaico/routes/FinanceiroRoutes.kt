@@ -15,6 +15,11 @@ fun Route.financeiroRouting() {
     val ROOT = "http://financeiro:8080"
 
     route("/financeiro") {
+        get ("/public/latest") {
+            val amount = call.request.queryParameters["amount"]
+            val response = httpGet("$ROOT/financeiro/public/latest?amount=$amount")
+            call.respondBytes { response.content }
+        }
         get {
             val amount = call.request.queryParameters["amount"]
             val response = httpGet("$ROOT/financeiro/public/latest?amount=$amount")

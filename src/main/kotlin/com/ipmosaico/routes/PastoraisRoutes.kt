@@ -16,6 +16,11 @@ fun Route.pastoraisRouting() {
     val ROOT = "http://pastorais:8080"
 
     route("/pastorais") {
+        get ("/public/latest") {
+            val amount = call.request.queryParameters["amount"]
+            val response = httpGet("$ROOT/pastorais/public/latest?amount=$amount")
+            call.respondBytes { response.content }
+        }
         get {
             val amount = call.request.queryParameters["amount"]
             val response = httpGet("$ROOT/pastorais/public/latest?amount=$amount")
