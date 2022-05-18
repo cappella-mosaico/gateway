@@ -15,6 +15,9 @@ fun Application.module() {
 
     install(CORS) {
         val allowHost = System.getenv("IPMOSAICO_ALLOW_HOST")
+        if (allowHost == null) {
+            throw Exception("no IPMOSAICO_ALLOW_HOST env variable set up")
+        }
         allowHost.split(",").forEach {
             allowHost(it, schemes = listOf("http", "https"))
         }
