@@ -14,7 +14,10 @@ fun main(args: Array<String>): Unit =
 fun Application.module() {
 
     install(CORS) {
-        allowHost("localhost:3001", schemes = listOf("http", "https"))
+        val allowHost = System.getenv("IPMOSAICO_ALLOW_HOST")
+        allowHost.split(",").forEach {
+            allowHost(it, schemes = listOf("http", "https"))
+        }
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
         allowMethod(HttpMethod.Put)
