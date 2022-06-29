@@ -24,6 +24,20 @@ fun Route.eventosRouting() {
       call.respondBytes { response.content }
     }
 
+    route("/participante") {
+      post {
+        val participante = call.receive<JsonObject>()
+        val headers : Map<String, String> = call.request.headers.entries()
+	    .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
+        val response = httpPost(
+          headers = headers,
+          url = "$ROOT/eventos/participante",
+          data = participante.toString()
+        )
+        call.respondBytes { response.content }
+      }
+    }
+
     authenticate ("auth-jwt") {
 
       post {
@@ -41,28 +55,12 @@ fun Route.eventosRouting() {
         call.respondBytes { response.content }
       }
 
-      route("/participante") {
-
-	post {
-	  val participante = call.receive<JsonObject>()
-	  val headers : Map<String, String> = call.request.headers.entries()
-	    .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
-	  val response = httpPost(
-	      headers = headers,
-	      url = "$ROOT/eventos/participante",
-	      data = participante.toString()
-	  )
-	  call.respondBytes { response.content }
-	}
-
-      }
-
       route ("/{eventoId}/{participanteId}/dependentes") {
 
         get {
           val eventoId = call.parameters["eventoId"]
-	  val participanteId = call.parameters["participanteId"]	    
-	  val response = httpGet("$ROOT/eventos/$eventoId/$participanteId/dependentes")
+          val participanteId = call.parameters["participanteId"]        
+          val response = httpGet("$ROOT/eventos/$eventoId/$participanteId/dependentes")
           call.respondBytes { response.content }
         }
 
