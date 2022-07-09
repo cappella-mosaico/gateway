@@ -55,6 +55,15 @@ fun Route.eventosRouting() {
         call.respondBytes { response.content }
       }
 
+      route("/{eventoId}/participantes") {
+        get {
+          val eventoId = call.parameters["eventoId"]
+          val response = httpGet("$ROOT/eventos/$eventoId/participantes")
+          call.respondBytes { response.content }
+        }
+      }
+
+
       route ("/{eventoId}/{participanteId}/dependentes") {
 
         get {
