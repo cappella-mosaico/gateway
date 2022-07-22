@@ -12,6 +12,7 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.json.JsonObject
 import khttp.get as httpGet
 import khttp.post as httpPost
+import khttp.put as httpPut
 
 
 fun Route.eventosRouting() {
@@ -72,6 +73,21 @@ fun Route.eventosRouting() {
           val response = httpGet("$ROOT/eventos/$eventoId/$participanteId/dependentes")
           call.respondBytes { response.content }
         }
+
+        put {
+          val dependente = call.receive<JsonObject>()
+          val eventoId = call.parameters["eventoId"]
+          val participanteId = call.parameters["participanteId"]
+          val headers : Map<String, String> = call.request.headers.entries()
+  	    .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
+          val response = httpPut(
+            headers = headers,
+            url = "$ROOT/eventos/$eventoId/$participanteId/dependentes",
+            data = dependente.toString()
+          )
+          call.respondBytes { response.content }
+        }
+
 
       }
     }
