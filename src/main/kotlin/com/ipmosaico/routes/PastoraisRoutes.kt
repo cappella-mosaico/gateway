@@ -26,14 +26,16 @@ fun Route.pastoraisRouting() {
             val response = httpGet("$ROOT/pastorais/public/latest?amount=$amount")
             call.respondBytes { response.content }
         }
+        get ("/{title}") {
+            val title = call.parameters["title"]
+            val response = httpGet("$ROOT/pastorais/public?title=$title")
+            call.respondBytes { response.content }
+        }
         authenticate ("auth-jwt") {
             post {
                 val pastoral = call.receive<JsonObject>()
-                println(pastoral)
-
                 val headers : Map<String, String> = call.request.headers.entries()
                     .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
-                println(headers)
                 val response = httpPost(
                     headers = headers,
                     url = "$ROOT/pastorais",
