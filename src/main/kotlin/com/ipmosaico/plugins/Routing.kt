@@ -1,11 +1,12 @@
 package com.ipmosaico.plugins
 
 import com.ipmosaico.routes.authRoutes
-import eventosRouting
+import pastoraisRouting
 import financeiroRouting
+import eventosRouting
+import compromissosRouting
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import pastoraisRouting
 
 fun Application.configureRouting() {
 
@@ -14,5 +15,6 @@ fun Application.configureRouting() {
         pastoraisRouting()
         financeiroRouting()
         eventosRouting()
+        compromissosRouting()
     }
 }
