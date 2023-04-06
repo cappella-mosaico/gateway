@@ -21,8 +21,16 @@ fun Route.compromissosRouting() {
 
   route("/compromissos") {
     get {
-      val response = httpGet("$ROOT/compromissos")
-      call.respondBytes { response.content }
+      val ministerio = call.request.queryParameters["ministerio"]
+      if (ministerio != null) {
+        val response = httpGet(
+          url = "$ROOT/compromissos",
+          params = mapOf("ministerio" to ministerio)
+        )
+        call.respondText(response.text, ContentType.Application.Json)
+      } else {
+        call.respond(HttpStatusCode.BadRequest, "Missing 'ministerio' parameter")
+      }
     }
 
     route("/{compromissoId}") {
@@ -37,7 +45,7 @@ fun Route.compromissosRouting() {
 
       post {
         val compromisso = call.receive<JsonObject>()
-        println(evento)
+        println(compromisso)
 
         val headers : Map<String, String> = call.request.headers.entries()
           .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
