@@ -4,7 +4,7 @@ WORKDIR /home/gradle/src
 RUN gradle shadowJar --no-daemon --stacktrace
 
 FROM openjdk:11
-EXPOSE 8080:8080
+EXPOSE 9090:9090
 RUN mkdir /app
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/gateway.jar
+COPY --from=build /home/gradle/src/build/libs/*-all.jar /app/gateway.jar
 ENTRYPOINT ["java","-jar","/app/gateway.jar"]

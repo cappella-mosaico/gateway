@@ -19,7 +19,7 @@ fun Application.module() {
             throw Exception("no IPMOSAICO_ALLOW_HOST env variable set up")
         }
         allowHost.split(",").forEach {
-            allowHost(it, schemes = listOf("http", "https"))
+            allowHost(it, schemes = listOf("https"))
         }
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
