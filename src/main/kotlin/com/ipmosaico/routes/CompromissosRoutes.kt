@@ -22,10 +22,11 @@ fun Route.compromissosRouting() {
   route("/compromissos") {
     get {
       val ministerio = call.request.queryParameters["ministerio"]
+      val passado = call.request.queryParameters["compromissosDoPassado"] ?: ""
       if (ministerio != null) {
         val response = httpGet(
           url = "$ROOT/compromissos",
-          params = mapOf("ministerio" to ministerio)
+          params = mapOf("ministerio" to ministerio, "compromissosDoPassado" to passado)
         )
         call.respondText(response.text, ContentType.Application.Json)
       } else {
