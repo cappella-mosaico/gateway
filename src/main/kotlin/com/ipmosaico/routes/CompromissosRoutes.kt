@@ -13,6 +13,7 @@ import kotlinx.serialization.json.JsonObject
 import khttp.get as httpGet
 import khttp.post as httpPost
 import khttp.put as httpPut
+import khttp.delete as httpDelete
 
 
 fun Route.compromissosRouting() {
@@ -57,6 +58,21 @@ fun Route.compromissosRouting() {
           data = compromisso.toString()
         )
         call.respondBytes { response.content }
+      }
+
+      delete("{id?}") {
+          val id = call.parameters["id"] ?: return@delete call.respondText(
+              "Missing id",
+              status = HttpStatusCode.BadRequest
+          )
+          val headers : Map<String, String> = call.request.headers.entries()
+              .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
+
+          val response = httpDelete(
+              headers = headers,
+              url = "$ROOT/compromissos/$id",
+          )
+          call.respondBytes { response.content }
       }
 
     }
