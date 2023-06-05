@@ -14,6 +14,8 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.InputStream
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 fun Route.authRoutes() {
 
@@ -25,6 +27,11 @@ fun Route.authRoutes() {
 
     route("/login") {
         post {
+            val filePath = "/ipmosaico-users/access.log"
+            val logFile = File(filePath)
+            val currentDateTime = LocalDateTime.now()
+            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            
 
             val user = call.receive<User>()
             val passwordDigest = calculateSHA256Hash(user.password)
@@ -42,8 +49,10 @@ fun Route.authRoutes() {
                     .withExpiresAt(Date(System.currentTimeMillis() + 30 * 60_000))
                     .sign(Algorithm.HMAC256(secret))
 
+                logFile.appendText("[$formattedDateTime] ${user.username} logged in successfully\n")
                 call.respond(hashMapOf("token" to token))
             } else {
+                logFile.appendText("[$formattedDateTime] ${user.username} failed to log in\n")
                 call.respond(message = "nope", status = HttpStatusCode.Unauthorized)
             }
         }
