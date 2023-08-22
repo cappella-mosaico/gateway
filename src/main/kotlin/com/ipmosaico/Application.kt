@@ -5,7 +5,7 @@ import com.ipmosaico.plugins.configureSecurity
 import com.ipmosaico.plugins.configureSerialization
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.cors.*
+import io.ktor.server.plugins.cors.routing.*
 
 fun main(args: Array<String>): Unit =
     io.ktor.server.netty.EngineMain.main(args)
