@@ -43,8 +43,6 @@ fun Route.compromissosRouting() {
 
       post {
         val compromisso = call.receive<JsonObject>()
-        println(compromisso)
-
         val headers : Map<String, String> = call.request.headers.entries()
           .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
         println(headers)
