@@ -13,24 +13,28 @@ import khttp.put as httpPut
 
 fun Route.pastoraisRouting() {
 
-  val ROOT = "http://pastorais:8080"
+  val ROOT = "http://compromissos:8080"
+
+  route("/pastoral") {
+
+    get ("/{title}") {
+      val title = call.parameters["title"]
+      val response = httpGet("$ROOT/pastoral?title=$title")
+      call.respondBytes { response.content }
+    }
+
+  }
 
   route("/pastorais") {
-      get ("/public/latest") {
-        val amount = call.request.queryParameters["amount"]
-        val response = httpGet("$ROOT/pastorais/public/latest?amount=$amount")
-        call.respondBytes { response.content }
-      }
-      get {
-        val amount = call.request.queryParameters["amount"]
-        val response = httpGet("$ROOT/pastorais/public/latest?amount=$amount")
-        call.respondBytes { response.content }
-      }
-      get ("/{title}") {
-        val title = call.parameters["title"]
-        val response = httpGet("$ROOT/pastorais/public?title=$title")
-        call.respondBytes { response.content }
-      }
+
+    get ("/public/latest") {
+      val response = httpGet("$ROOT/pastorais")
+      call.respondBytes { response.content }
+    }
+    get {
+      val response = httpGet("$ROOT/pastorais")
+      call.respondBytes { response.content }
+    }
 
     authenticate ("auth-jwt") {
       post {
