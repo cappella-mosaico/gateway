@@ -12,7 +12,7 @@ import khttp.post as httpPost
 
 fun Route.financeiroRouting() {
 
-    val ROOT = "http://financeiro:8080"
+    val ROOT = "http://compromissos:8080"
 
     route("/financeiro") {
         get ("/public/latest") {
@@ -27,17 +27,16 @@ fun Route.financeiroRouting() {
         }
         authenticate ("auth-jwt") {
             post {
-                val pastoral = call.receive<JsonObject>()
-                println(pastoral)
+                val financeiro = call.receive<JsonObject>()
 
                 val headers : Map<String, String> = call.request.headers.entries()
                     .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
-                println(headers)
                 val response = httpPost(
                     headers = headers,
                     url = "$ROOT/financeiro",
-                    data = pastoral.toString()
+                    data = financeiro.toString()
                 )
+
                 call.respondBytes { response.content }
             }
         }
@@ -50,7 +49,6 @@ fun Route.financeiroRouting() {
 
                 val headers : Map<String, String> = call.request.headers.entries()
                     .associate { Pair(it.key, it.value.get(0)) }.toMutableMap()
-                println(headers)
                 val response = httpDelete(
                     headers = headers,
                     url = "$ROOT/financeiro/$id",
