@@ -21,7 +21,7 @@ fun Route.financeiroRouting() {
             call.respondBytes { response.content }
         }
         get {
-            val amount = call.request.queryParameters["amount"]
+            val amount = call.request.queryParameters["amount"] ?: 999
             val response = httpGet("$ROOT/financeiro/public/latest?amount=$amount")
             call.respondBytes { response.content }
         }
